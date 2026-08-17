@@ -1,0 +1,153 @@
+$card-bg: #ffffff;
+$primary-btn: #6366f1;
+$primary-btn-hover: #4f46e5;
+$text-dark: #1f2937;
+$text-gray: #6b7280;
+$border-light: #e5e7eb;
+
+.friends-page {
+  max-width: 900px; // <--- Restricționează lățimea
+  margin: 20px auto; // <--- Centrează totul pe mijlocul ecranului
+  padding: 0 16px;
+
+  .friends-header {
+    background: $card-bg;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    margin-bottom: 24px;
+    border: 1px solid #f0f0f0;
+
+    h2 {
+      margin: 0 0 16px 0;
+      color: $text-dark;
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    .friends-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+
+      button {
+        background: #f3f4f6;
+        border: none;
+        color: $text-gray;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &.active,
+        &:hover {
+          background-color: $primary-btn;
+          color: #ffffff;
+          box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+        }
+      }
+    }
+  }
+
+  .friends-section {
+    margin-bottom: 32px;
+
+    h3 {
+      font-size: 1.2rem;
+      color: $text-dark;
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
+
+    .friends-grid {
+      display: grid;
+      // Ajustat pentru carduri uniforme pe centru
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 18px;
+
+      .friend-card {
+        background: $card-bg;
+        border-radius: 16px;
+        padding: 20px 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        border: 1px solid #f0f0f0;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+        transition: all 0.2s ease;
+
+        &:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .avatar {
+          width: 85px;
+          height: 85px;
+          border-radius: 50%;
+          object-fit: cover;
+          margin-bottom: 12px;
+          border: 3px solid #f9fafb;
+        }
+
+        .info {
+          width: 100%;
+
+          h4 {
+            margin: 0 0 4px 0;
+            color: $text-dark;
+            font-size: 1rem;
+            font-weight: 700;
+          }
+
+          p {
+            margin: 0 0 16px 0;
+            color: $text-gray;
+            font-size: 0.82rem;
+          }
+        }
+
+        .actions {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          width: 100%;
+
+          button {
+            width: 100%;
+            padding: 9px;
+            border-radius: 10px;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &.btn-confirm,
+            &.btn-add {
+              background-color: $primary-btn;
+              color: white;
+
+              &:hover {
+                background-color: $primary-btn-hover;
+              }
+            }
+
+            &.btn-delete,
+            &.btn-remove {
+              background-color: #f3f4f6;
+              color: $text-dark;
+
+              &:hover {
+                background-color: #e5e7eb;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

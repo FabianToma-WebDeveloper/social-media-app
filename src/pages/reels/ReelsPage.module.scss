@@ -1,0 +1,63 @@
+.reelsPage {
+  padding: 6rem 2rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  h1 {
+    margin-bottom: 1rem;
+  }
+
+  p {
+    margin-bottom: 2rem;
+    color: #555;
+  }
+
+  .placeholderGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .reelCard {
+    background-color: #f4f4f4;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .reelThumbnail {
+    height: 180px;
+    background: linear-gradient(135deg, #4fd1c5, #2d6a7e);
+  }
+
+  .reelInfo {
+    padding: 1rem;
+  }
+
+  .reelInfo h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  .reelInfo p {
+    margin: 0;
+    color: #666;
+  }
+}
+
+@media (max-width: 900px) {
+  .reelsPage {
+    padding: 5rem 1rem 1rem;
+  }
+
+  .placeholderGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .placeholderGrid {
+    grid-template-columns: 1fr;
+  }
+}

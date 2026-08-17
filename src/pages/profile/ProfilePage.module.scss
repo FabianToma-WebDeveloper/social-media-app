@@ -1,0 +1,139 @@
+.profilePage {
+  min-height: 100vh;
+  padding: 6rem 1rem 3rem;
+  background: #f7f8fc;
+}
+
+.cover {
+  max-width: 1100px;
+  height: 220px;
+  margin: 0 auto;
+  border-radius: 20px 20px 0 0;
+  background: linear-gradient(135deg, #6c63ff, #8b5cf6);
+}
+
+.profileCard {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+  background: white;
+  border-radius: 0 0 20px 20px;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  margin-top: -65px;
+  margin-bottom: 1rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 5px solid white;
+  border-radius: 50%;
+
+  background: #f1efff;
+  font-size: 3rem;
+}
+
+.profileInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profileInfo h1 {
+  margin: 0;
+  color: #252a41;
+}
+
+.profileInfo p {
+  margin: 0.3rem 0;
+  color: #9298aa;
+}
+
+.editButton,
+.createButton {
+  border: none;
+  border-radius: 9px;
+  padding: 0.7rem 1.2rem;
+  background: #6c63ff;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bio {
+  color: #62687d;
+  line-height: 1.5;
+}
+
+.stats {
+  display: flex;
+  gap: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.stats div {
+  display: flex;
+  flex-direction: column;
+}
+
+.stats strong {
+  color: #252a41;
+}
+
+.stats span {
+  color: #9298aa;
+  font-size: 0.8rem;
+}
+
+.content {
+  max-width: 1100px;
+  margin: 1.5rem auto;
+
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 1.5rem;
+}
+
+.postsCard,
+.aboutCard {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 5px 20px rgba(35, 45, 80, 0.06);
+}
+
+.emptyPosts {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #9298aa;
+}
+
+.emptyIcon {
+  font-size: 2.5rem;
+}
+
+.aboutCard p {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+@media (max-width: 700px) {
+  .profileInfo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .editButton {
+    width: 100%;
+  }
+
+  .content {
+    grid-template-columns: 1fr;
+  }
+}

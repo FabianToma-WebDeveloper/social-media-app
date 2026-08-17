@@ -1,0 +1,145 @@
+.auth {
+  margin: 3rem auto;
+  width: 90%;
+  max-width: 26rem;
+
+  padding: 2.5rem;
+  border-radius: 18px;
+
+  background: linear-gradient(145deg, #ffffff, #f4f7ff);
+
+  box-shadow:
+    0 20px 45px rgba(35, 45, 80, 0.15),
+    0 5px 15px rgba(35, 45, 80, 0.08);
+
+  text-align: center;
+  color: #20243a;
+
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+      0 25px 55px rgba(35, 45, 80, 0.18),
+      0 8px 20px rgba(35, 45, 80, 0.1);
+  }
+
+  form {
+    .control {
+      margin-bottom: 1.2rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+
+      font-size: 0.95rem;
+      font-weight: 600;
+
+      color: #343957;
+      text-align: left;
+    }
+
+    input {
+      box-sizing: border-box;
+      width: 100%;
+
+      padding: 0.85rem 1rem;
+
+      background-color: #f8f9fc;
+      color: #252a41;
+
+      border: 1px solid #d9deeb;
+      border-radius: 10px;
+
+      outline: none;
+
+      font-size: 0.95rem;
+
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+
+      &:focus {
+        background-color: #ffffff;
+        border-color: #6c63ff;
+
+        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+      }
+
+      &::placeholder {
+        color: #9aa1b5;
+      }
+    }
+  }
+
+  .actions {
+    margin-top: 1.7rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+
+    button {
+      width: 100%;
+
+      padding: 0.85rem 1rem;
+
+      cursor: pointer;
+
+      color: #ffffff;
+      background: linear-gradient(135deg, #6c63ff, #8b5cf6);
+
+      border: none;
+      border-radius: 10px;
+
+      font-size: 1rem;
+      font-weight: 600;
+
+      box-shadow: 0 8px 18px rgba(108, 99, 255, 0.25);
+
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+
+        box-shadow: 0 12px 24px rgba(108, 99, 255, 0.35);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    .toggle {
+      width: auto;
+
+      padding: 0.4rem 0.8rem;
+
+      color: #6c63ff;
+      background: transparent;
+
+      border: none;
+      box-shadow: none;
+
+      font-size: 0.9rem;
+      font-weight: 500;
+
+      cursor: pointer;
+
+      &:hover {
+        color: #5148d8;
+        text-decoration: underline;
+
+        transform: none;
+        box-shadow: none;
+      }
+    }
+  }
+}

@@ -1,0 +1,214 @@
+.mainContainer {
+  display: grid;
+  grid-template-columns: 220px minmax(400px, 1fr) 220px;
+  gap: 1.5rem;
+
+  width: 100%;
+  max-width: 1400px;
+
+  margin: 0 auto;
+  padding: 6rem 1.5rem 2rem;
+
+  box-sizing: border-box;
+
+  background: #f7f8fc;
+  min-height: 100vh;
+
+  aside {
+    width: auto;
+    min-height: auto;
+
+    background: transparent;
+
+    position: sticky;
+    top: 6rem;
+
+    align-self: start;
+  }
+
+  section {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* ---------------- content stanga / dreapta ---------------- */
+
+.sideCard {
+  background: white;
+
+  border: 1px solid #e8e9f0;
+  border-radius: 16px;
+
+  padding: 1.2rem;
+
+  box-shadow: 0 5px 20px rgba(35, 45, 80, 0.06);
+
+  h3 {
+    margin: 0 0 1rem;
+
+    color: #252a41;
+    font-size: 1rem;
+  }
+}
+
+/* ---------------- LEFT MENU ---------------- */
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+
+  width: 100%;
+
+  padding: 0.75rem;
+
+  margin-bottom: 0.35rem;
+
+  border-radius: 10px;
+
+  color: #62687d;
+  text-decoration: none;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  box-sizing: border-box;
+
+  transition: 0.2s ease;
+
+  &:hover {
+    background: #f1efff;
+    color: #6c63ff;
+  }
+
+  &.active {
+    background: #f1efff;
+    color: #6c63ff;
+  }
+}
+
+/* ---------------- PROFILE CARD ---------------- */
+
+.profileCard {
+  text-align: center;
+
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+
+  border-bottom: 1px solid #eeeef3;
+
+  img {
+    width: 65px;
+    height: 65px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+
+    border: 3px solid #f1efff;
+  }
+
+  h4 {
+    margin: 0.6rem 0 0.2rem;
+
+    color: #252a41;
+  }
+
+  span {
+    color: #9298aa;
+    font-size: 0.8rem;
+  }
+}
+
+/* ---------------- RIGHT SIDE ---------------- */
+
+.friend {
+  display: flex;
+  align-items: center;
+
+  gap: 0.6rem;
+
+  padding: 0.7rem 0;
+
+  border-bottom: 1px solid #f0f0f4;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  img {
+    width: 38px;
+    height: 38px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+  }
+
+  span {
+    flex: 1;
+
+    color: #343957;
+
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  button {
+    border: none;
+
+    padding: 0.4rem 0.7rem;
+
+    border-radius: 8px;
+
+    background: #6c63ff;
+    color: white;
+
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+
+    &:hover {
+      background: #5148d8;
+    }
+  }
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+
+@media (max-width: 1100px) {
+  .mainContainer {
+    grid-template-columns: 190px minmax(400px, 1fr);
+
+    .rightSide {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContainer {
+    display: block;
+
+    padding: 5.5rem 0.8rem 1.5rem;
+
+    .leftSide {
+      display: none;
+    }
+
+    section {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  .mainContainer {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
