@@ -1,0 +1,438 @@
+.settingsPage {
+  width: 100%;
+  max-width: 1000px;
+
+  min-height: 100vh;
+
+  margin: 0 auto;
+
+  padding: 6rem 1rem 4rem;
+
+  color: #252a41;
+}
+
+.settingsHeader {
+  margin-bottom: 1.4rem;
+
+  padding: 1.6rem 1.8rem;
+
+  background:
+    linear-gradient(135deg,
+      rgba(108, 99, 255, 0.08),
+      rgba(139, 92, 246, 0.05)),
+    #ffffff;
+
+  border: 1px solid #e7e8ef;
+  border-radius: 20px;
+
+  box-shadow:
+    0 10px 30px rgba(35, 40, 70, 0.05);
+
+  >span {
+    color: #6c63ff;
+
+    font-size: 0.72rem;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  h1 {
+    margin: 0.3rem 0 0.4rem;
+
+    font-size: 1.9rem;
+    font-weight: 800;
+
+    color: #252a41;
+  }
+
+  p {
+    margin: 0;
+
+    color: #7d8397;
+
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+}
+
+.settingsLayout {
+  display: flex;
+  flex-direction: column;
+
+  gap: 1rem;
+}
+
+.settingsCard {
+  padding: 1.4rem;
+
+  background: #ffffff;
+
+  border: 1px solid #e7e8ef;
+  border-radius: 18px;
+
+  box-shadow:
+    0 8px 24px rgba(35, 40, 70, 0.05);
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  padding-bottom: 1rem;
+
+  border-bottom: 1px solid #f0f1f5;
+
+  h2 {
+    margin: 0 0 0.25rem;
+
+    color: #252a41;
+
+    font-size: 1.05rem;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+
+    color: #9298aa;
+
+    font-size: 0.78rem;
+  }
+
+  >span {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 11px;
+
+    background: #f3f1ff;
+
+    font-size: 1rem;
+  }
+}
+
+.settingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1.5rem;
+
+  padding: 1.1rem 0;
+
+  border-bottom: 1px solid #f3f4f7;
+
+  &:last-child {
+    padding-bottom: 0;
+
+    border-bottom: none;
+  }
+
+  h3 {
+    margin: 0 0 0.25rem;
+
+    color: #343957;
+
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+
+    max-width: 580px;
+
+    color: #9298aa;
+
+    font-size: 0.76rem;
+    line-height: 1.45;
+  }
+}
+
+.actionButton {
+  flex-shrink: 0;
+
+  padding: 0.7rem 0.9rem;
+
+  border: none;
+  border-radius: 9px;
+
+  background:
+    linear-gradient(135deg,
+      #6c63ff,
+      #8b5cf6);
+
+  color: #ffffff;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+      0 6px 15px rgba(108, 99, 255, 0.22);
+  }
+}
+
+.switch {
+  position: relative;
+
+  width: 48px;
+  height: 27px;
+
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 20px;
+
+  background: #dfe1e8;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease;
+
+  span {
+    position: absolute;
+
+    width: 21px;
+    height: 21px;
+
+    top: 3px;
+    left: 3px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    box-shadow:
+      0 2px 5px rgba(35, 40, 70, 0.18);
+
+    transition:
+      transform 0.2s ease;
+  }
+}
+
+.switchActive {
+  background:
+    linear-gradient(135deg,
+      #6c63ff,
+      #8b5cf6);
+
+  span {
+    transform: translateX(21px);
+  }
+}
+
+.dangerCard {
+  border-color: #ffe1e1;
+}
+
+.resetButton {
+  flex-shrink: 0;
+
+  padding: 0.7rem 1rem;
+
+  border: 1px solid #ffd9d9;
+  border-radius: 9px;
+
+  background: #fff3f3;
+
+  color: #d45454;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background: #ffe8e8;
+
+    transform: translateY(-1px);
+  }
+}
+
+@media (max-width: 768px) {
+  .settingsPage {
+    padding:
+      4.8rem 0.7rem 5.4rem;
+  }
+
+  .settingsHeader {
+    padding: 1.2rem;
+
+    border-radius: 16px;
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    p {
+      font-size: 0.8rem;
+    }
+  }
+
+  .settingsCard {
+    padding: 1rem;
+
+    border-radius: 14px;
+  }
+
+  .settingRow {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .settingsPage {
+    padding:
+      4.7rem 0.6rem 5.2rem;
+  }
+
+  .settingsHeader {
+    padding: 1rem;
+
+    h1 {
+      font-size: 1.35rem;
+    }
+  }
+
+  .settingRow {
+    align-items: flex-start;
+
+    h3 {
+      font-size: 0.84rem;
+    }
+
+    p {
+      font-size: 0.7rem;
+    }
+  }
+
+  .actionButton,
+  .resetButton {
+    padding: 0.65rem 0.7rem;
+
+    font-size: 0.7rem;
+  }
+
+  .switch {
+    margin-top: 0.1rem;
+  }
+}
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+:global(body.dark-mode) {
+  .settingsPage {
+    color: #f2f3f7;
+  }
+
+  .settingsHeader,
+  .settingsCard {
+    background: #20222d;
+    border-color: #303341;
+
+    box-shadow:
+      0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .settingsHeader {
+    background:
+      linear-gradient(135deg,
+        rgba(108, 99, 255, 0.12),
+        rgba(139, 92, 246, 0.08)),
+      #20222d;
+
+    >span {
+      color: #9d94ff;
+    }
+
+    h1 {
+      color: #f2f3f7;
+    }
+
+    p {
+      color: #a8acbb;
+    }
+  }
+
+  .sectionTitle {
+    border-color: #303341;
+
+    h2 {
+      color: #f2f3f7;
+    }
+
+    p {
+      color: #9fa3b2;
+    }
+
+    >span {
+      background: #2c2945;
+    }
+  }
+
+  .settingRow {
+    border-color: #303341;
+
+    h3 {
+      color: #f2f3f7;
+    }
+
+    p {
+      color: #9fa3b2;
+    }
+  }
+
+  .switch {
+    background: #464957;
+  }
+
+  .switchActive {
+    background:
+      linear-gradient(135deg,
+        #6c63ff,
+        #8b5cf6);
+  }
+
+  .dangerCard {
+    border-color: #573638;
+  }
+
+  .resetButton {
+    background: #3a2729;
+    border-color: #573638;
+    color: #ff9a9a;
+
+    &:hover {
+      background: #462d30;
+    }
+  }
+}

@@ -77,7 +77,11 @@ header {
 
   .burgerButton {
     display: none;
-    color: #343957;
+    color: #343957 !important;
+
+    svg {
+      color: inherit;
+    }
   }
 
   .userEmail {
@@ -86,6 +90,47 @@ header {
 
     display: flex;
     align-items: center;
+  }
+}
+
+.logoLink {
+  text-decoration: none;
+}
+
+.authButton {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  padding: 0;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #343957;
+
+  font: inherit;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    color: #6c63ff;
+    transform: translateY(-1px);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  svg {
+    font-size: 1.25rem;
   }
 }
 
@@ -103,6 +148,63 @@ header {
 
     .burgerButton {
       display: inline-flex;
+    }
+  }
+}
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+:global(body.dark-mode) {
+  header {
+    background: #1f212b;
+
+    box-shadow:
+      0 4px 18px rgba(0, 0, 0, 0.24);
+
+    .logo {
+      color: #f2f3f7;
+
+      &:hover {
+        color: #9d94ff;
+      }
+    }
+
+    .menu {
+      a {
+        color: #d8dae3;
+
+        &:global(.active) {
+          color: #a79fff;
+          background-color: #2c2945;
+        }
+
+        &:hover {
+          color: #a79fff;
+          background-color: #2a2d39;
+        }
+      }
+    }
+
+    .burgerButton {
+      color: #e5e6ec !important;
+
+      svg {
+        color: inherit;
+      }
+    }
+
+    .userEmail {
+      color: #d8dae3;
+    }
+  }
+
+  .authButton {
+    color: #d8dae3;
+
+    &:hover {
+      color: #a79fff;
     }
   }
 }

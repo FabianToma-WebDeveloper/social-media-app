@@ -1,0 +1,159 @@
+.mobileNav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobileNav {
+    position: fixed;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 68px;
+
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+
+    align-items: center;
+
+    background: white;
+
+    border-top: 1px solid #e7e8ef;
+
+    box-shadow: 0 -3px 15px rgba(30, 35, 60, 0.08);
+
+    z-index: 1000;
+
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .mobileNav a {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 3px;
+
+    height: 100%;
+
+    color: #73788d;
+
+    text-decoration: none;
+
+    transition:
+      color 0.2s ease,
+      transform 0.2s ease;
+
+    span {
+      display: block;
+
+      font-size: 1.15rem;
+
+      line-height: 1;
+    }
+
+    small {
+      display: block !important;
+
+      opacity: 1 !important;
+      visibility: visible !important;
+
+      font-size: 0.66rem;
+      font-weight: 600;
+
+      line-height: 1;
+
+      color: inherit;
+    }
+
+    &:global(.active) {
+      color: #6c63ff;
+
+      span {
+        transform: translateY(-1px);
+      }
+
+      small {
+        font-weight: 700;
+      }
+
+      &::after {
+        content: "";
+
+        position: absolute;
+
+        bottom: 4px;
+
+        width: 18px;
+        height: 3px;
+
+        border-radius: 999px;
+
+        background: #6c63ff;
+      }
+    }
+  }
+
+  .createButton {
+    width: 46px;
+    height: 46px;
+
+    margin: auto;
+
+    border: none;
+    border-radius: 50%;
+
+    background: linear-gradient(135deg,
+        #6c63ff,
+        #8b5cf6);
+
+    color: white;
+
+    font-size: 1.7rem;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:active {
+      transform: scale(0.94);
+    }
+  }
+}
+
+/* DARK MODE */
+
+:global(body.dark-mode) {
+  .mobileNav {
+    background: #20222d;
+
+    border-top-color: #303341;
+
+    box-shadow: 0 -3px 18px rgba(0, 0, 0, 0.25);
+  }
+
+  .mobileNav a {
+    color: #a8adbd;
+
+    &:global(.active) {
+      color: #a79fff;
+
+      &::after {
+        background: #a79fff;
+      }
+    }
+  }
+}

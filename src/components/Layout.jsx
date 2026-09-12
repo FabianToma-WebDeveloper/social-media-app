@@ -1,11 +1,17 @@
 import Navigation from "./Navigation";
-import styles from './Layout.module.scss';
+import MobileNavigation from "./MobileNavigation";
+import styles from "./Layout.module.scss";
 
 const Layout = ({ children }) => {
   return (
     <>
-      <Navigation/>
-      <main className={styles.mainContent}>{children}</main>
+      <Navigation />
+
+      <main className={styles.mainContent}>
+        {children}
+      </main>
+
+      <MobileNavigation />
     </>
   );
 };

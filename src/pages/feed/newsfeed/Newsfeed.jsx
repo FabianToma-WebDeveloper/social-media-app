@@ -1,172 +1,236 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import styles from "./Newsfeed.module.scss";
+
 import profile from "../../../assets/profile.webp";
 import post1 from "../../../assets/post.avif";
 import post2 from "../../../assets/post2.webp";
 
-// Material UI IMPORTS
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import InfoIcon from "@mui/icons-material/Info";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ChatIcon from "@mui/icons-material/Chat";
 import ReplyIcon from "@mui/icons-material/Reply";
-import SendIcon from "@mui/icons-material/Send";
-import { useState } from "react";
-import CommentsSection from "./comments/CommentsSection";
-import { useNavigate } from "react-router-dom";
 
 const Newsfeed = ({ postData }) => {
+  const navigate = useNavigate();
+
   const [isLiked, setIsLiked] = useState(false);
-  const [likes, setLikes] = useState(Math.floor(Math.random() * 100));
-  const [isShared, setIsShared] = useState(false);
-  const [shares, setShares] = useState(Math.floor(Math.random() * 100));
+  const [likes, setLikes] = useState(24);
+
+  const [shares, setShares] = useState(2);
+
+  const [showComments, setShowComments] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [comments, setComments] = useState([]);
 
   const postImages = [post1, post2];
 
-  const navigate = useNavigate();
-
   const handleLike = () => {
-    if (!isLiked) {
-      setLikes((prevState) => prevState + 1);
-    } else {
-      setLikes((prevState) => prevState - 1);
-    }
+    setIsLiked((currentLiked) => {
+      setLikes((currentLikes) =>
+        currentLiked
+          ? currentLikes - 1
+          : currentLikes + 1
+      );
 
-    setIsLiked((prevState) => !prevState);
+      return !currentLiked;
+    });
   };
 
   const handleShare = () => {
-    setShares((prevState) => prevState + 1);
-    setIsShared(true);
+    setShares((currentShares) => currentShares + 1);
+  };
+
+  const handleToggleComments = () => {
+    setShowComments((currentState) => !currentState);
+  };
+
+  const handleAddComment = () => {
+    if (!commentText.trim()) {
+      return;
+    }
+
+    const newComment = {
+      id: Date.now(),
+      author: "Fabian Toma",
+      text: commentText.trim(),
+    };
+
+    setComments((currentComments) => [
+      ...currentComments,
+      newComment,
+    ]);
+
+    setCommentText("");
+  };
+
+  const handleCommentKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleAddComment();
+    }
   };
 
   const goToProfilePage = () => {
-    navigate(`/profile/${postData.id}`);
-  }
+    navigate("/profile/1");
+  };
+
+  const title = postData?.title || "A new Nexora moment";
+
+  const description =
+    postData?.description ||
+    "Sharing a new moment with the Nexora community.";
+
+  const imageIndex = postData?.id
+    ? postData.id % postImages.length
+    : 0;
 
   return (
-    <div className={styles.mainPost}>
+    <article className={styles.mainPost}>
       <div className={styles.post}>
         <div className={styles.postHeader}>
-          <div
-  className={styles.profileUserInfo}
-  onClick={goToProfilePage}
->
-  <img
-    src={profile}
-    alt="Profile"
-    className={styles.profileImage}
-  />
+          <button
+            type="button"
+            className={styles.profileUserInfo}
+            onClick={goToProfilePage}
+          >
+            <img
+              src={profile}
+              alt="Fabian Toma"
+              className={styles.profileImage}
+            />
 
-  <span>Sergiu Savin</span>
-
-  <span>08 Apr 2026</span>
-</div>
-
-          <div className={styles.profileOptionsWrapper}>
-            <button className={styles.profileOptions}>
-              <MoreHorizIcon />
-            </button>
-
-            <div className={styles.profileOptionsDropdown}>
-              <button>Edit this post</button>
-              <button>Remove this post</button>
+            <div>
+              <h3>Fabian Toma</h3>
+              <span>Recently</span>
             </div>
-          </div>
+          </button>
+
+          <button
+            type="button"
+            className={styles.profileOptions}
+            aria-label="Post options"
+          >
+            <MoreHorizIcon />
+          </button>
         </div>
 
         <div className={styles.content}>
-          <div className={styles.imgWrapper}>
-            <img
-              src={postImages[postData.id % 2]}
-              alt="post"
-              className={styles.imgContent}
-            />
+          <div className={styles.textContent}>
+            <h2 className={styles.postTitle}>
+              {title.charAt(0).toUpperCase() +
+                title.slice(1)}
+            </h2>
 
-            <div className={styles.infoIconWrapper}>
-              <div className={styles.infoIcon}>
-                <InfoIcon fontSize="large" />
-              </div>
-
-              <p className={styles.infoMessage}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Quisquam eaque placeat culpa commodi minima. Quod quae quisquam
-                ex nulla ut nobis fugit nostrum incidunt eveniet sunt sint sed
-                ducimus, dolorem in, vel veniam. Facilis quos numquam iure,
-                dolorem exercitationem, nesciunt qui laboriosam sunt sint ut
-                iste odio, ducimus cum dolores?
-                <a href="landing-page.html">Read more...</a>
-              </p>
-            </div>
+            <p className={styles.postDescription}>
+              {description.charAt(0).toUpperCase() +
+                description.slice(1)}
+            </p>
           </div>
 
-          <strong className={styles.postTitle}>
-            {postData.title.charAt(0).toUpperCase() + postData.title.slice(1)}
-          </strong>
-
-          <p className={styles.postDescription}>
-            {postData.description.charAt(0).toUpperCase() + postData.description.slice(1)}
-          </p>
-          <a href="landing-page.html">Read more...</a>
+          <img
+            src={postImages[imageIndex]}
+            alt={title}
+            className={styles.imgContent}
+          />
         </div>
 
         <div className={styles.reacts}>
-          <div className={styles.likesInfo}>
-            <ThumbUpIcon />
-            <span>{likes}</span> <span> likes</span>
-          </div>
+          <span>❤️ {likes} likes</span>
 
-          <div className={styles.commentsInfo}>
-            <span>{shares}</span> <span>shares</span>
-            <ChatIcon />
+          <div>
+            <span>💬 {comments.length} comments</span>
+            <span>🔁 {shares} shares</span>
           </div>
         </div>
 
         <div className={styles.reactActions}>
-          <ul className={styles.actions}>
-            <li
-              className={`${styles.reaction} ${isLiked ? styles.touched : ""}`}
-              onClick={handleLike}
-            >
-              <ThumbUpIcon />
-              <span>Like</span>
-            </li>
-            <li className={styles.reaction}>
-              <ChatIcon />
-              <span>Comment</span>
-            </li>
-            <li
-              className={`${styles.reaction} ${isShared ? styles.touched : ""}`}
-              onClick={handleShare}
-            >
-              <ReplyIcon />
-              <span>Share</span>
-            </li>
-          </ul>
+          <button
+            type="button"
+            className={`${styles.reaction} ${isLiked ? styles.touched : ""
+              }`}
+            onClick={handleLike}
+          >
+            <ThumbUpIcon fontSize="small" />
+            <span>
+              {isLiked ? "Liked" : "Like"}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            className={styles.reaction}
+            onClick={handleToggleComments}
+          >
+            <ChatIcon fontSize="small" />
+            <span>Comment</span>
+          </button>
+
+          <button
+            type="button"
+            className={styles.reaction}
+            onClick={handleShare}
+          >
+            <ReplyIcon fontSize="small" />
+            <span>Share</span>
+          </button>
         </div>
 
-        <hr />
+        {showComments && (
+          <div className={styles.commentsSection}>
+            <div className={styles.commentInputRow}>
+              <img
+                src={profile}
+                alt="Fabian Toma"
+                className={styles.commentAvatar}
+              />
 
-        <div className={styles.commentSection}>
-          <a href="#">
-            <img src={profile} alt="" className={styles.profileImage} />
-          </a>
-          <input
-            type="text"
-            placeholder="Adauga un comentariu"
-            className={styles.newCommentField}
-          />
-          <div className={styles.wrap}>
-            <button
-              className={`${styles.insertCommentButton} ${styles.button}`}
-            >
-              <SendIcon />
-            </button>
+              <input
+                type="text"
+                placeholder="Write a comment..."
+                value={commentText}
+                onChange={(event) =>
+                  setCommentText(event.target.value)
+                }
+                onKeyDown={handleCommentKeyDown}
+              />
+
+              <button
+                type="button"
+                onClick={handleAddComment}
+              >
+                Send
+              </button>
+            </div>
+
+            {comments.length > 0 && (
+              <div className={styles.commentsList}>
+                {comments.map((comment) => (
+                  <div
+                    className={styles.comment}
+                    key={comment.id}
+                  >
+                    <img
+                      src={profile}
+                      alt={comment.author}
+                      className={styles.commentAvatar}
+                    />
+
+                    <div>
+                      <strong>
+                        {comment.author}
+                      </strong>
+
+                      <p>{comment.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-
-        <CommentsSection/>
+        )}
       </div>
-    </div>
+    </article>
   );
 };
 

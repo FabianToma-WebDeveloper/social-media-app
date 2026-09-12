@@ -1,12 +1,24 @@
 import { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  useNavigate,
+} from "react-router-dom";
+
 import styles from "./Navigation.module.scss";
-import { useDispatch, useSelector } from "react-redux";
+
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
+
 import { selectUser } from "../redux/selectors";
-import { toggleLogin } from "../redux/slices/authSlice";
+import { logout } from "../redux/slices/authSlice";
+
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import GroupIcon from "@mui/icons-material/Group";
@@ -16,16 +28,13 @@ import LogoutIcon from "@mui/icons-material/Logout";
 
 const Navigation = () => {
   const user = useSelector(selectUser);
+
   const isLoggedIn = user.isAuthenticated;
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [anchorEl, setAnchorEl] = useState(null);
 
-  const toggleAuth = () => {
-    dispatch(toggleLogin());
-    isLoggedIn ? navigate("/auth") : navigate("/");
-    handleClose();
-  };
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -40,10 +49,26 @@ const Navigation = () => {
     handleClose();
   };
 
+  const handleAuth = () => {
+    if (isLoggedIn) {
+      dispatch(logout());
+      navigate("/auth");
+    } else {
+      navigate("/auth");
+    }
+
+    handleClose();
+  };
+
   return (
     <header>
-      <Link to="/">
-        <div className={styles.logo}>Nexora</div>
+      <Link
+        to="/"
+        className={styles.logoLink}
+      >
+        <div className={styles.logo}>
+          Nexora
+        </div>
       </Link>
 
       <nav>
@@ -52,75 +77,131 @@ const Navigation = () => {
             <>
               <li className={styles.menuItem}>
                 <NavLink to="/profile/1">
-                  <AccountCircleIcon fontSize="small" /> My Profile
+                  <AccountCircleIcon fontSize="small" />
+                  My Profile
                 </NavLink>
               </li>
+
               <li className={styles.menuItem}>
                 <NavLink to="/friends">
-                  <GroupIcon fontSize="small" /> Friends
+                  <GroupIcon fontSize="small" />
+                  Friends
                 </NavLink>
               </li>
+
               <li className={styles.menuItem}>
                 <NavLink to="/reels">
-                  <MovieIcon fontSize="small" /> Reels
+                  <MovieIcon fontSize="small" />
+                  Reels
                 </NavLink>
               </li>
             </>
           )}
 
-          <li className={styles.menuItem} onClick={toggleAuth}>
-            <NavLink to="/auth">
+          <li className={styles.menuItem}>
+            <button
+              type="button"
+              className={styles.authButton}
+              onClick={handleAuth}
+            >
               {isLoggedIn ? (
                 <>
-                  <LogoutIcon fontSize="small" /> Logout
+                  <LogoutIcon fontSize="small" />
+                  Logout
                 </>
               ) : (
                 <>
-                  <LoginIcon fontSize="small" /> Login
+                  <LoginIcon fontSize="small" />
+                  Login
                 </>
               )}
-            </NavLink>
+            </button>
           </li>
-          <li className={styles.userEmail}>{user.email}</li>
         </ul>
 
         <IconButton
           className={styles.burgerButton}
-          aria-label="open menu"
+          aria-label="Open navigation menu"
           onClick={handleOpen}
           size="large"
         >
-          <MenuIcon sx={{ color: "white" }} />
+          <MenuIcon />
         </IconButton>
 
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={handleClose}
-          transformOrigin={{ horizontal: "right", vertical: "top" }}
-          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          transformOrigin={{
+            horizontal: "right",
+            vertical: "top",
+          }}
+          anchorOrigin={{
+            horizontal: "right",
+            vertical: "bottom",
+          }}
         >
           {isLoggedIn && (
             <>
-              <MenuItem onClick={() => handleNavigate("/my-profile")}>
-                <AccountCircleIcon fontSize="small" sx={{ mr: 1 }} /> My Profile
+              <MenuItem
+                onClick={() =>
+                  handleNavigate("/profile/1")
+                }
+              >
+                <AccountCircleIcon
+                  fontSize="small"
+                  sx={{ mr: 1 }}
+                />
+
+                My Profile
               </MenuItem>
-              <MenuItem onClick={() => handleNavigate("/friends")}>
-                <GroupIcon fontSize="small" sx={{ mr: 1 }} /> Friends
+
+              <MenuItem
+                onClick={() =>
+                  handleNavigate("/friends")
+                }
+              >
+                <GroupIcon
+                  fontSize="small"
+                  sx={{ mr: 1 }}
+                />
+
+                Friends
               </MenuItem>
-              <MenuItem onClick={() => handleNavigate("/reels")}>
-                <MovieIcon fontSize="small" sx={{ mr: 1 }} /> Reels
+
+              <MenuItem
+                onClick={() =>
+                  handleNavigate("/reels")
+                }
+              >
+                <MovieIcon
+                  fontSize="small"
+                  sx={{ mr: 1 }}
+                />
+
+                Reels
               </MenuItem>
             </>
           )}
-          <MenuItem onClick={toggleAuth}>
+
+          <MenuItem onClick={handleAuth}>
             {isLoggedIn ? (
               <>
-                <LogoutIcon fontSize="small" sx={{ mr: 1 }} /> Logout
+                <LogoutIcon
+                  fontSize="small"
+                  sx={{ mr: 1 }}
+                />
+
+                Logout
               </>
             ) : (
               <>
-                <LoginIcon fontSize="small" sx={{ mr: 1 }} /> Login
+                <LoginIcon
+                  fontSize="small"
+                  sx={{ mr: 1 }}
+                />
+
+                Login
               </>
             )}
           </MenuItem>
