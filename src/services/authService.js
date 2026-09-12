@@ -1,27 +1,30 @@
-import axios  from "axios";
+import axios from "axios";
 
-axios.defaults.baseURL = 'http://localhost:3000';
+const API_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+axios.defaults.baseURL = API_URL;
 
 async function login(payload) {
-    const response = await axios.post('/login', payload)
+    const response = await axios.post("/login", payload);
 
-    console.dir(response)
+    console.dir(response);
 
     return response;
 }
 
 async function register(payload) {
-    return axios.post('/register', payload)
+    return axios.post("/register", payload);
 }
 
 async function logout() {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
 }
 
 const authService = {
-    login: login, // Similar cu aceeasi scriere ca mai jos: register e tot una cu register: register
+    login,
     register,
-    logout
-}
+    logout,
+};
 
 export default authService;
