@@ -16,10 +16,7 @@ const ProfilePage = () => {
     (() => {
       try {
         const savedUser = localStorage.getItem("nexoraUser");
-
-        return savedUser
-          ? JSON.parse(savedUser)
-          : null;
+        return savedUser ? JSON.parse(savedUser) : null;
       } catch {
         return null;
       }
@@ -32,17 +29,13 @@ const ProfilePage = () => {
   // SETTINGS
   const settings = useMemo(() => {
     try {
-      const savedSettings =
-        localStorage.getItem("nexoraSettings");
+      const savedSettings = localStorage.getItem("nexoraSettings");
 
       if (savedSettings) {
         return JSON.parse(savedSettings);
       }
     } catch (error) {
-      console.log(
-        "Could not load Nexora settings:",
-        error
-      );
+      console.log("Could not load Nexora settings:", error);
     }
 
     return {
@@ -51,8 +44,13 @@ const ProfilePage = () => {
     };
   }, []);
 
-  // Profile 1 = profilul nostru
-  const isOwnProfile = id === "1";
+  // OWN PROFILE
+  // /profile/1 ramane profilul nostru principal.
+  // Daca ruta foloseste ID-ul userului logat, este tot profilul nostru.
+  const isOwnProfile =
+    id === "1" ||
+    (loggedUser?.id &&
+      String(id) === String(loggedUser.id));
 
   // Profilul este ascuns doar pentru ceilalti utilizatori
   const profileIsPrivate =
@@ -63,17 +61,13 @@ const ProfilePage = () => {
   // PROFILE DATA
   const [profileData, setProfileData] = useState(() => {
     try {
-      const savedProfile =
-        localStorage.getItem(profileStorageKey);
+      const savedProfile = localStorage.getItem(profileStorageKey);
 
       if (savedProfile) {
         return JSON.parse(savedProfile);
       }
     } catch (error) {
-      console.log(
-        "Could not load Nexora profile:",
-        error
-      );
+      console.log("Could not load Nexora profile:", error);
     }
 
     const userName =
@@ -93,14 +87,41 @@ const ProfilePage = () => {
     };
   });
 
-  const [editData, setEditData] =
-    useState(profileData);
+  const [editData, setEditData] = useState(profileData);
+
+  // Verifica daca o postare apartine userului logat
+  const isOwnPost = (post) => {
+    if (
+      loggedUser?.id &&
+      post.userId &&
+      String(post.userId) === String(loggedUser.id)
+    ) {
+      return true;
+    }
+
+    if (
+      loggedUser?.email &&
+      post.email &&
+      post.email === loggedUser.email
+    ) {
+      return true;
+    }
+
+    // Fallback pentru postarile vechi
+    if (
+      profileData.name &&
+      post.author === profileData.name
+    ) {
+      return true;
+    }
+
+    return false;
+  };
 
   // POSTS
   const [myPosts, setMyPosts] = useState(() => {
     try {
-      const savedPosts =
-        localStorage.getItem("nexoraPosts");
+      const savedPosts = localStorage.getItem("nexoraPosts");
 
       if (!savedPosts) {
         return [];
@@ -109,28 +130,26 @@ const ProfilePage = () => {
       const parsedPosts = JSON.parse(savedPosts);
 
       return parsedPosts.filter((post) => {
-        // Postarile noi - verificare prin ID
-        if (loggedUser?.id && post.userId) {
-          return (
-            String(post.userId) ===
-            String(loggedUser.id)
-          );
+        if (
+          loggedUser?.id &&
+          post.userId &&
+          String(post.userId) === String(loggedUser.id)
+        ) {
+          return true;
         }
 
-        // Verificare prin email
-        if (loggedUser?.email && post.email) {
-          return post.email === loggedUser.email;
+        if (
+          loggedUser?.email &&
+          post.email &&
+          post.email === loggedUser.email
+        ) {
+          return true;
         }
 
-        // Postarile vechi - verificare prin nume
         return post.author === profileData.name;
       });
     } catch (error) {
-      console.log(
-        "Could not load profile posts:",
-        error
-      );
-
+      console.log("Could not load profile posts:", error);
       return [];
     }
   });
@@ -146,14 +165,23 @@ const ProfilePage = () => {
     }
 
     try {
-      const savedPosts =
-        localStorage.getItem("nexoraPosts");
+      const savedPosts = localStorage.getItem("nexoraPosts");
 
       if (!savedPosts) {
         return;
       }
 
       const allPosts = JSON.parse(savedPosts);
+
+      const postToDelete = allPosts.find(
+        (post) => post.id === postId
+      );
+
+      // Protectie: userul poate sterge doar postarile lui
+      if (!postToDelete || !isOwnPost(postToDelete)) {
+        window.alert("You can only delete your own posts.");
+        return;
+      }
 
       const updatedPosts = allPosts.filter(
         (post) => post.id !== postId
@@ -165,15 +193,10 @@ const ProfilePage = () => {
       );
 
       setMyPosts((currentPosts) =>
-        currentPosts.filter(
-          (post) => post.id !== postId
-        )
+        currentPosts.filter((post) => post.id !== postId)
       );
     } catch (error) {
-      console.log(
-        "Could not delete post:",
-        error
-      );
+      console.log("Could not delete post:", error);
     }
   };
 
@@ -208,9 +231,7 @@ const ProfilePage = () => {
         document.getElementById("create-post");
 
       const input =
-        document.getElementById(
-          "create-post-input"
-        );
+        document.getElementById("create-post-input");
 
       createPost?.scrollIntoView({
         behavior: "smooth",
@@ -225,9 +246,7 @@ const ProfilePage = () => {
     <div className={styles.profilePage}>
       {/* COVER */}
       <div className={styles.cover}>
-        <div
-          className={styles.coverOverlay}
-        ></div>
+        <div className={styles.coverOverlay}></div>
       </div>
 
       {/* PROFILE HEADER */}
@@ -239,7 +258,6 @@ const ProfilePage = () => {
             className={styles.avatar}
           />
 
-          {/* Edit apare doar pe profilul nostru */}
           {isOwnProfile && (
             <button
               type="button"
@@ -260,7 +278,7 @@ const ProfilePage = () => {
           {profileData.bio}
         </p>
 
-        {/* Stats */}
+        {/* STATS */}
         {!profileIsPrivate && (
           <div className={styles.stats}>
             <div>
@@ -287,10 +305,8 @@ const ProfilePage = () => {
           <div className={styles.editHeader}>
             <div>
               <h2>Edit Profile</h2>
-
               <p>
-                Update how your profile appears on
-                Nexora.
+                Update how your profile appears on Nexora.
               </p>
             </div>
 
@@ -427,20 +443,15 @@ const ProfilePage = () => {
         <div className={styles.content}>
           <section className={styles.postsCard}>
             <div className={styles.emptyPosts}>
-              <div
-                className={styles.emptyIcon}
-              >
+              <div className={styles.emptyIcon}>
                 🔒
               </div>
 
-              <h3>
-                This account is private
-              </h3>
+              <h3>This account is private</h3>
 
               <p>
-                Add this person as a friend to
-                see their posts and profile
-                details.
+                Add this person as a friend to see
+                their posts and profile details.
               </p>
             </div>
           </section>
@@ -455,17 +466,14 @@ const ProfilePage = () => {
                 <h2>My Posts</h2>
 
                 <p>
-                  Everything you've shared on
-                  Nexora.
+                  Everything you've shared on Nexora.
                 </p>
               </div>
 
               {isOwnProfile && (
                 <button
                   type="button"
-                  className={
-                    styles.createSmallButton
-                  }
+                  className={styles.createSmallButton}
                   onClick={handleCreatePost}
                 >
                   + Create Post
@@ -477,41 +485,29 @@ const ProfilePage = () => {
               <div className={styles.postsList}>
                 {myPosts.map((post) => (
                   <article
-                    className={
-                      styles.profilePost
-                    }
+                    className={styles.profilePost}
                     key={post.id}
                   >
-                    <div
-                      className={
-                        styles.postHeader
-                      }
-                    >
+                    <div className={styles.postHeader}>
                       <img
                         src={profile}
                         alt={profileData.name}
                       />
 
                       <div>
-                        <h3>
-                          {profileData.name}
-                        </h3>
-
-                        <span>
-                          {post.createdAt}
-                        </span>
+                        <h3>{profileData.name}</h3>
+                        <span>{post.createdAt}</span>
                       </div>
 
-                      {isOwnProfile && (
+                      {/* DELETE POST */}
+                      {isOwnPost(post) && (
                         <button
                           type="button"
                           className={
                             styles.deletePostButton
                           }
                           onClick={() =>
-                            handleDeletePost(
-                              post.id
-                            )
+                            handleDeletePost(post.id)
                           }
                           title="Delete post"
                         >
@@ -521,11 +517,7 @@ const ProfilePage = () => {
                     </div>
 
                     {post.text && (
-                      <p
-                        className={
-                          styles.postText
-                        }
-                      >
+                      <p className={styles.postText}>
                         {post.text}
                       </p>
                     )}
@@ -534,25 +526,17 @@ const ProfilePage = () => {
                       <img
                         src={post.image}
                         alt="Profile post"
-                        className={
-                          styles.postImage
-                        }
+                        className={styles.postImage}
                       />
                     )}
 
-                    <div
-                      className={
-                        styles.postStats
-                      }
-                    >
+                    <div className={styles.postStats}>
                       <span>
                         ❤️ {post.likes} likes
                       </span>
 
                       <span>
-                        💬{" "}
-                        {post.comments?.length ||
-                          0}{" "}
+                        💬 {post.comments?.length || 0}{" "}
                         comments
                       </span>
 
@@ -565,26 +549,21 @@ const ProfilePage = () => {
               </div>
             ) : (
               <div className={styles.emptyPosts}>
-                <div
-                  className={styles.emptyIcon}
-                >
+                <div className={styles.emptyIcon}>
                   📝
                 </div>
 
                 <h3>No posts yet</h3>
 
                 <p>
-                  Your posts will appear here
-                  when you share something with
-                  your friends.
+                  Your posts will appear here when you
+                  share something with your friends.
                 </p>
 
                 {isOwnProfile && (
                   <button
                     type="button"
-                    className={
-                      styles.createButton
-                    }
+                    className={styles.createButton}
                     onClick={handleCreatePost}
                   >
                     Create a post
@@ -603,23 +582,18 @@ const ProfilePage = () => {
 
               <div>
                 <small>Location</small>
-
                 <strong>
                   {profileData.location}
                 </strong>
               </div>
             </div>
 
-            {/* Email respecta Show Email */}
             {settings.showEmail && (
-              <div
-                className={styles.aboutItem}
-              >
+              <div className={styles.aboutItem}>
                 <span>📧</span>
 
                 <div>
                   <small>Email</small>
-
                   <strong>
                     {profileData.email}
                   </strong>
@@ -641,10 +615,8 @@ const ProfilePage = () => {
 
               <div>
                 <small>Joined</small>
-
                 <strong>
-                  Nexora in{" "}
-                  {profileData.joined}
+                  Nexora in {profileData.joined}
                 </strong>
               </div>
             </div>
