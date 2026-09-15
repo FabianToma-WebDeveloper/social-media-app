@@ -210,11 +210,18 @@ const HomePage = () => {
 
   // DELETE POST
   const handleDeletePost = (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this post?"
+    );
+
+    if (!confirmDelete) {
+      return;
+    }
+
     setDemoPosts((currentPosts) =>
       currentPosts.filter((post) => post.id !== id)
     );
   };
-
   // VERIFICA DACA POSTAREA APARTINE USERULUI LOGAT
   const isOwnPost = (post) => {
     if (
@@ -233,6 +240,7 @@ const HomePage = () => {
       return true;
     }
 
+    // Pentru postarile vechi
     if (
       currentUserName &&
       post.author === currentUserName
@@ -521,12 +529,11 @@ const HomePage = () => {
               {isOwnPost(post) && (
                 <button
                   type="button"
-                  onClick={() =>
-                    handleDeletePost(post.id)
-                  }
+                  className={styles.deletePostButton}
+                  onClick={() => handleDeletePost(post.id)}
                   title="Delete post"
                 >
-                  🗑 Delete
+                  🗑️ Delete
                 </button>
               )}
             </div>
