@@ -233,6 +233,13 @@ const HomePage = () => {
       return true;
     }
 
+    if (
+      currentUserName &&
+      post.author === currentUserName
+    ) {
+      return true;
+    }
+
     return false;
   };
 
