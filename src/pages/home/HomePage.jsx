@@ -1,14 +1,34 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import Newsfeed from "../feed/newsfeed/Newsfeed";
 import styles from "./HomePage.module.scss";
 import feedService from "../../services/feedService";
 import profile from "../../assets/profile.webp";
+import { selectUser } from "../../redux/selectors";
 
 const HomePage = () => {
-  const [postList, setPostList] = useState([]);
+  const auth = useSelector(selectUser);
 
+  const loggedUser = auth.user || (() => {
+    try {
+      const savedUser = localStorage.getItem("nexoraUser");
+
+      return savedUser
+        ? JSON.parse(savedUser)
+        : null;
+    } catch {
+      return null;
+    }
+  })();
+
+  const currentUserName =
+    loggedUser?.name ||
+    loggedUser?.email?.split("@")[0] ||
+    "Nexora User";
+
+  const [postList, setPostList] = useState([]);
   const [newPost, setNewPost] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -162,7 +182,9 @@ const HomePage = () => {
 
     const post = {
       id: Date.now(),
-      author: "Fabian Toma",
+      author: currentUserName,
+      userId: loggedUser?.id,
+      email: loggedUser?.email,
       text: newPost.trim(),
       image: selectedImage,
       likes: 0,
@@ -280,7 +302,9 @@ const HomePage = () => {
 
         const newComment = {
           id: Date.now(),
-          author: "Fabian Toma",
+          author: currentUserName,
+          userId: loggedUser?.id,
+          email: loggedUser?.email,
           text: post.commentText.trim(),
         };
 
@@ -308,10 +332,10 @@ const HomePage = () => {
           <div className={styles.profileCard}>
             <img
               src={profile}
-              alt="Fabian Toma"
+              alt={currentUserName}
             />
 
-            <h4>Fabian Toma</h4>
+            <h4>{currentUserName}</h4>
 
             <span>Welcome back 👋</span>
           </div>
@@ -363,13 +387,13 @@ const HomePage = () => {
           <div className={styles.createTop}>
             <img
               src={profile}
-              alt="Fabian Toma"
+              alt={currentUserName}
             />
 
             <input
               id="create-post-input"
               type="text"
-              placeholder="What's on your mind, Fabian?"
+              placeholder={`What's on your mind, ${currentUserName}?`}
               value={newPost}
               onChange={(event) =>
                 setNewPost(event.target.value)
@@ -533,7 +557,7 @@ const HomePage = () => {
                 <div className={styles.commentInputRow}>
                   <img
                     src={profile}
-                    alt="Fabian Toma"
+                    alt={currentUserName}
                   />
 
                   <input

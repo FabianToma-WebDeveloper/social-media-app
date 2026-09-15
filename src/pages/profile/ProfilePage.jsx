@@ -1,11 +1,14 @@
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../redux/selectors";
 import styles from "./ProfilePage.module.scss";
 import profile from "../../assets/profile.webp";
 
 const ProfilePage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
 
   // SETTINGS
   const settings = useMemo(() => {
@@ -36,18 +39,29 @@ const ProfilePage = () => {
 
   // PROFILE DATA
   const [profileData, setProfileData] = useState(() => {
-    const savedProfile = localStorage.getItem("nexoraProfile");
+    try {
+      const savedProfile = localStorage.getItem(profileStorageKey);
 
-    if (savedProfile) {
-      return JSON.parse(savedProfile);
+      if (savedProfile) {
+        return JSON.parse(savedProfile);
+      }
+    } catch (error) {
+      console.log("Could not load Nexora profile:", error);
     }
 
+    const userName =
+      loggedUser?.name ||
+      loggedUser?.email?.split("@")[0] ||
+      "Nexora User";
+
     return {
-      name: "Fabian Toma",
-      username: "@fabian.toma",
+      name: userName,
+      username: `@${userName
+        .toLowerCase()
+        .replace(/\s+/g, ".")}`,
       bio: "Welcome to my Nexora profile 👋 Connecting with friends and sharing moments.",
       location: "Romania",
-      email: "fabian@example.com",
+      email: loggedUser?.email || "",
       joined: "2026",
     };
   });
@@ -65,14 +79,25 @@ const ProfilePage = () => {
 
       const parsedPosts = JSON.parse(savedPosts);
 
-      return parsedPosts.filter(
-        (post) => post.author === "Fabian Toma"
-      );
+      return parsedPosts.filter((post) => {
+        // Postarile noi sunt legate de cont prin ID
+        if (loggedUser?.id && post.userId) {
+          return String(post.userId) === String(loggedUser.id);
+        }
+
+        // Fallback prin email
+        if (loggedUser?.email && post.email) {
+          return post.email === loggedUser.email;
+        }
+
+        // Fallback pentru postarile mai vechi
+        return post.author === profileData.name;
+      });
     } catch (error) {
       console.log("Could not load profile posts:", error);
       return [];
     }
-  }, []);
+  }, [loggedUser?.id, loggedUser?.email, profileData.name]);
 
   // EDIT PROFILE
   const handleEditProfile = () => {
@@ -89,7 +114,7 @@ const ProfilePage = () => {
     setProfileData(editData);
 
     localStorage.setItem(
-      "nexoraProfile",
+      profileStorageKey,
       JSON.stringify(editData)
     );
 

@@ -11,6 +11,7 @@ import {
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -22,6 +23,7 @@ const AuthForm = () => {
   const toggleAuthState = () => {
     setIsLogin((prevState) => !prevState);
 
+    setName("");
     setEmail("");
     setPassword("");
   };
@@ -29,10 +31,16 @@ const AuthForm = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    const payload = {
-      email: email.trim(),
-      password,
-    };
+    const payload = isLogin
+      ? {
+          email: email.trim(),
+          password,
+        }
+      : {
+          name: name.trim(),
+          email: email.trim(),
+          password,
+        };
 
     try {
       if (isLogin) {
@@ -43,6 +51,7 @@ const AuthForm = () => {
         await dispatch(registerUser(payload)).unwrap();
 
         setIsLogin(true);
+        setName("");
         setPassword("");
       }
     } catch (err) {
@@ -77,6 +86,27 @@ const AuthForm = () => {
         </div>
 
         <form onSubmit={submitHandler}>
+
+          {/* NAME - apare doar la REGISTER */}
+          {!isLogin && (
+            <div className={styles.control}>
+              <label htmlFor="name">
+                Name
+              </label>
+
+              <input
+                type="text"
+                id="name"
+                placeholder="Enter your name"
+                required
+                value={name}
+                onChange={(e) =>
+                  setName(e.target.value)
+                }
+              />
+            </div>
+          )}
+
           <div className={styles.control}>
             <label htmlFor="email">
               Email

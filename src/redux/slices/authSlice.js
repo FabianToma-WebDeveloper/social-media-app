@@ -8,6 +8,7 @@ const initialState = {
   error: false,
   email: null,
   userToken: null,
+  user: null,
   success: false,
 };
 
@@ -18,6 +19,7 @@ export const loginUser = createAsyncThunk(
     const { data } = await authService.login(payload);
 
     localStorage.setItem("token", data.accessToken);
+    localStorage.setItem("nexoraUser", JSON.stringify(data.user));
 
     return data;
   }
@@ -46,9 +48,11 @@ const authSlice = createSlice({
       state.error = false;
       state.email = null;
       state.userToken = null;
+      state.user = null;
       state.success = false;
 
       localStorage.removeItem("token");
+      localStorage.removeItem("nexoraUser");
     },
 
     clearAuthError(state) {
@@ -74,6 +78,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.email = action.payload.user.email;
         state.userToken = action.payload.accessToken;
+        state.user = action.payload.user;
       })
 
       .addCase(loginUser.rejected, (state, action) => {
@@ -86,6 +91,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.email = null;
         state.userToken = null;
+        state.user = null;
       })
 
       // REGISTER
@@ -106,6 +112,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.email = null;
         state.userToken = null;
+        state.user = null;
         state.success = true;
       })
 
@@ -119,6 +126,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.email = null;
         state.userToken = null;
+        state.user = null;
         state.success = false;
       });
   },
