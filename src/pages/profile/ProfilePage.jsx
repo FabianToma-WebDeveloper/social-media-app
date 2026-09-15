@@ -9,6 +9,24 @@ const ProfilePage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const auth = useSelector(selectUser);
+
+  const loggedUser = auth.user || (() => {
+    try {
+      const savedUser = localStorage.getItem("nexoraUser");
+
+      return savedUser
+        ? JSON.parse(savedUser)
+        : null;
+    } catch {
+      return null;
+    }
+  })();
+
+  const profileStorageKey = loggedUser?.id
+    ? `nexoraProfile_${loggedUser.id}`
+    : `nexoraProfile_${loggedUser?.email || "guest"}`;
+
 
   // SETTINGS
   const settings = useMemo(() => {
