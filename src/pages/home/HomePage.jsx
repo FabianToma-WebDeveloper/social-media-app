@@ -11,17 +11,17 @@ import { selectUser } from "../../redux/selectors";
 const HomePage = () => {
   const auth = useSelector(selectUser);
 
-  const loggedUser = auth.user || (() => {
-    try {
-      const savedUser = localStorage.getItem("nexoraUser");
+  const loggedUser =
+    auth.user ||
+    (() => {
+      try {
+        const savedUser = localStorage.getItem("nexoraUser");
 
-      return savedUser
-        ? JSON.parse(savedUser)
-        : null;
-    } catch {
-      return null;
-    }
-  })();
+        return savedUser ? JSON.parse(savedUser) : null;
+      } catch {
+        return null;
+      }
+    })();
 
   const currentUserName =
     loggedUser?.name ||
@@ -79,8 +79,7 @@ const HomePage = () => {
   // SUGGESTED FRIENDS
   const [friends, setFriends] = useState(() => {
     try {
-      const savedFriends =
-        localStorage.getItem("nexoraFriends");
+      const savedFriends = localStorage.getItem("nexoraFriends");
 
       if (savedFriends) {
         return JSON.parse(savedFriends);
@@ -207,6 +206,34 @@ const HomePage = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+  };
+
+  // DELETE POST
+  const handleDeletePost = (id) => {
+    setDemoPosts((currentPosts) =>
+      currentPosts.filter((post) => post.id !== id)
+    );
+  };
+
+  // VERIFICA DACA POSTAREA APARTINE USERULUI LOGAT
+  const isOwnPost = (post) => {
+    if (
+      loggedUser?.id &&
+      post.userId &&
+      String(post.userId) === String(loggedUser.id)
+    ) {
+      return true;
+    }
+
+    if (
+      loggedUser?.email &&
+      post.email &&
+      post.email === loggedUser.email
+    ) {
+      return true;
+    }
+
+    return false;
   };
 
   // LIKE
@@ -481,9 +508,20 @@ const HomePage = () => {
 
               <div>
                 <h4>{post.author}</h4>
-
                 <span>{post.createdAt}</span>
               </div>
+
+              {isOwnPost(post) && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleDeletePost(post.id)
+                  }
+                  title="Delete post"
+                >
+                  🗑 Delete
+                </button>
+              )}
             </div>
 
             {post.text && (
