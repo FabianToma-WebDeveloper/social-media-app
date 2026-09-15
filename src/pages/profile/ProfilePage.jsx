@@ -11,33 +11,38 @@ const ProfilePage = () => {
 
   const auth = useSelector(selectUser);
 
-  const loggedUser = auth.user || (() => {
-    try {
-      const savedUser = localStorage.getItem("nexoraUser");
+  const loggedUser =
+    auth.user ||
+    (() => {
+      try {
+        const savedUser = localStorage.getItem("nexoraUser");
 
-      return savedUser
-        ? JSON.parse(savedUser)
-        : null;
-    } catch {
-      return null;
-    }
-  })();
+        return savedUser
+          ? JSON.parse(savedUser)
+          : null;
+      } catch {
+        return null;
+      }
+    })();
 
   const profileStorageKey = loggedUser?.id
     ? `nexoraProfile_${loggedUser.id}`
     : `nexoraProfile_${loggedUser?.email || "guest"}`;
 
-
   // SETTINGS
   const settings = useMemo(() => {
     try {
-      const savedSettings = localStorage.getItem("nexoraSettings");
+      const savedSettings =
+        localStorage.getItem("nexoraSettings");
 
       if (savedSettings) {
         return JSON.parse(savedSettings);
       }
     } catch (error) {
-      console.log("Could not load Nexora settings:", error);
+      console.log(
+        "Could not load Nexora settings:",
+        error
+      );
     }
 
     return {
@@ -58,13 +63,17 @@ const ProfilePage = () => {
   // PROFILE DATA
   const [profileData, setProfileData] = useState(() => {
     try {
-      const savedProfile = localStorage.getItem(profileStorageKey);
+      const savedProfile =
+        localStorage.getItem(profileStorageKey);
 
       if (savedProfile) {
         return JSON.parse(savedProfile);
       }
     } catch (error) {
-      console.log("Could not load Nexora profile:", error);
+      console.log(
+        "Could not load Nexora profile:",
+        error
+      );
     }
 
     const userName =
@@ -84,12 +93,14 @@ const ProfilePage = () => {
     };
   });
 
-  const [editData, setEditData] = useState(profileData);
+  const [editData, setEditData] =
+    useState(profileData);
 
   // POSTS
-  const myPosts = useMemo(() => {
+  const [myPosts, setMyPosts] = useState(() => {
     try {
-      const savedPosts = localStorage.getItem("nexoraPosts");
+      const savedPosts =
+        localStorage.getItem("nexoraPosts");
 
       if (!savedPosts) {
         return [];
@@ -98,24 +109,73 @@ const ProfilePage = () => {
       const parsedPosts = JSON.parse(savedPosts);
 
       return parsedPosts.filter((post) => {
-        // Postarile noi sunt legate de cont prin ID
+        // Postarile noi - verificare prin ID
         if (loggedUser?.id && post.userId) {
-          return String(post.userId) === String(loggedUser.id);
+          return (
+            String(post.userId) ===
+            String(loggedUser.id)
+          );
         }
 
-        // Fallback prin email
+        // Verificare prin email
         if (loggedUser?.email && post.email) {
           return post.email === loggedUser.email;
         }
 
-        // Fallback pentru postarile mai vechi
+        // Postarile vechi - verificare prin nume
         return post.author === profileData.name;
       });
     } catch (error) {
-      console.log("Could not load profile posts:", error);
+      console.log(
+        "Could not load profile posts:",
+        error
+      );
+
       return [];
     }
-  }, [loggedUser?.id, loggedUser?.email, profileData.name]);
+  });
+
+  // DELETE POST FROM PROFILE
+  const handleDeletePost = (postId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this post?"
+    );
+
+    if (!confirmDelete) {
+      return;
+    }
+
+    try {
+      const savedPosts =
+        localStorage.getItem("nexoraPosts");
+
+      if (!savedPosts) {
+        return;
+      }
+
+      const allPosts = JSON.parse(savedPosts);
+
+      const updatedPosts = allPosts.filter(
+        (post) => post.id !== postId
+      );
+
+      localStorage.setItem(
+        "nexoraPosts",
+        JSON.stringify(updatedPosts)
+      );
+
+      setMyPosts((currentPosts) =>
+        currentPosts.filter(
+          (post) => post.id !== postId
+        )
+      );
+    } catch (error) {
+      console.log(
+        "Could not delete post:",
+        error
+      );
+    }
+  };
 
   // EDIT PROFILE
   const handleEditProfile = () => {
@@ -148,7 +208,9 @@ const ProfilePage = () => {
         document.getElementById("create-post");
 
       const input =
-        document.getElementById("create-post-input");
+        document.getElementById(
+          "create-post-input"
+        );
 
       createPost?.scrollIntoView({
         behavior: "smooth",
@@ -163,7 +225,9 @@ const ProfilePage = () => {
     <div className={styles.profilePage}>
       {/* COVER */}
       <div className={styles.cover}>
-        <div className={styles.coverOverlay}></div>
+        <div
+          className={styles.coverOverlay}
+        ></div>
       </div>
 
       {/* PROFILE HEADER */}
@@ -225,7 +289,8 @@ const ProfilePage = () => {
               <h2>Edit Profile</h2>
 
               <p>
-                Update how your profile appears on Nexora.
+                Update how your profile appears on
+                Nexora.
               </p>
             </div>
 
@@ -362,15 +427,20 @@ const ProfilePage = () => {
         <div className={styles.content}>
           <section className={styles.postsCard}>
             <div className={styles.emptyPosts}>
-              <div className={styles.emptyIcon}>
+              <div
+                className={styles.emptyIcon}
+              >
                 🔒
               </div>
 
-              <h3>This account is private</h3>
+              <h3>
+                This account is private
+              </h3>
 
               <p>
-                Add this person as a friend to see
-                their posts and profile details.
+                Add this person as a friend to
+                see their posts and profile
+                details.
               </p>
             </div>
           </section>
@@ -385,14 +455,17 @@ const ProfilePage = () => {
                 <h2>My Posts</h2>
 
                 <p>
-                  Everything you've shared on Nexora.
+                  Everything you've shared on
+                  Nexora.
                 </p>
               </div>
 
               {isOwnProfile && (
                 <button
                   type="button"
-                  className={styles.createSmallButton}
+                  className={
+                    styles.createSmallButton
+                  }
                   onClick={handleCreatePost}
                 >
                   + Create Post
@@ -404,23 +477,55 @@ const ProfilePage = () => {
               <div className={styles.postsList}>
                 {myPosts.map((post) => (
                   <article
-                    className={styles.profilePost}
+                    className={
+                      styles.profilePost
+                    }
                     key={post.id}
                   >
-                    <div className={styles.postHeader}>
+                    <div
+                      className={
+                        styles.postHeader
+                      }
+                    >
                       <img
                         src={profile}
                         alt={profileData.name}
                       />
 
                       <div>
-                        <h3>{profileData.name}</h3>
-                        <span>{post.createdAt}</span>
+                        <h3>
+                          {profileData.name}
+                        </h3>
+
+                        <span>
+                          {post.createdAt}
+                        </span>
                       </div>
+
+                      {isOwnProfile && (
+                        <button
+                          type="button"
+                          className={
+                            styles.deletePostButton
+                          }
+                          onClick={() =>
+                            handleDeletePost(
+                              post.id
+                            )
+                          }
+                          title="Delete post"
+                        >
+                          🗑️ Delete
+                        </button>
+                      )}
                     </div>
 
                     {post.text && (
-                      <p className={styles.postText}>
+                      <p
+                        className={
+                          styles.postText
+                        }
+                      >
                         {post.text}
                       </p>
                     )}
@@ -429,17 +534,26 @@ const ProfilePage = () => {
                       <img
                         src={post.image}
                         alt="Profile post"
-                        className={styles.postImage}
+                        className={
+                          styles.postImage
+                        }
                       />
                     )}
 
-                    <div className={styles.postStats}>
+                    <div
+                      className={
+                        styles.postStats
+                      }
+                    >
                       <span>
                         ❤️ {post.likes} likes
                       </span>
 
                       <span>
-                        💬 {post.comments?.length || 0} comments
+                        💬{" "}
+                        {post.comments?.length ||
+                          0}{" "}
+                        comments
                       </span>
 
                       <span>
@@ -451,21 +565,26 @@ const ProfilePage = () => {
               </div>
             ) : (
               <div className={styles.emptyPosts}>
-                <div className={styles.emptyIcon}>
+                <div
+                  className={styles.emptyIcon}
+                >
                   📝
                 </div>
 
                 <h3>No posts yet</h3>
 
                 <p>
-                  Your posts will appear here when you
-                  share something with your friends.
+                  Your posts will appear here
+                  when you share something with
+                  your friends.
                 </p>
 
                 {isOwnProfile && (
                   <button
                     type="button"
-                    className={styles.createButton}
+                    className={
+                      styles.createButton
+                    }
                     onClick={handleCreatePost}
                   >
                     Create a post
@@ -484,6 +603,7 @@ const ProfilePage = () => {
 
               <div>
                 <small>Location</small>
+
                 <strong>
                   {profileData.location}
                 </strong>
@@ -492,11 +612,14 @@ const ProfilePage = () => {
 
             {/* Email respecta Show Email */}
             {settings.showEmail && (
-              <div className={styles.aboutItem}>
+              <div
+                className={styles.aboutItem}
+              >
                 <span>📧</span>
 
                 <div>
                   <small>Email</small>
+
                   <strong>
                     {profileData.email}
                   </strong>
@@ -518,8 +641,10 @@ const ProfilePage = () => {
 
               <div>
                 <small>Joined</small>
+
                 <strong>
-                  Nexora in {profileData.joined}
+                  Nexora in{" "}
+                  {profileData.joined}
                 </strong>
               </div>
             </div>
