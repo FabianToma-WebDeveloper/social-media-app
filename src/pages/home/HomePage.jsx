@@ -271,26 +271,15 @@ const HomePage = () => {
     );
   };
 
- // SHARE FUNCTIONAL
+// SHARE FUNCTIONAL
 const handleShare = async (post) => {
-  const shareData = {
-    title: `${post.author} on Nexora`,
-    text: post.text || "Check out this post on Nexora!",
-    url: window.location.href,
-  };
+  const shareUrl = `${window.location.origin}/#post-${post.id}`;
 
   try {
-    // Pe telefon / browsere care suporta Web Share API
-    if (navigator.share) {
-      await navigator.share(shareData);
-    } else {
-      // Fallback pentru desktop
-      await navigator.clipboard.writeText(window.location.href);
+    await navigator.clipboard.writeText(shareUrl);
 
-      window.alert("Nexora link copied to clipboard!");
-    }
+    window.alert("Post link copied! You can now share it.");
 
-    // Creste numarul doar daca share-ul a reusit
     setDemoPosts((currentPosts) =>
       currentPosts.map((currentPost) =>
         currentPost.id === post.id
@@ -302,10 +291,12 @@ const handleShare = async (post) => {
       )
     );
   } catch (error) {
-    // Daca userul inchide meniul Share, nu facem nimic
-    if (error.name !== "AbortError") {
-      console.log("Could not share post:", error);
-    }
+    console.log("Could not copy share link:", error);
+
+    window.prompt(
+      "Copy this link to share the post:",
+      shareUrl
+    );
   }
 };
 
