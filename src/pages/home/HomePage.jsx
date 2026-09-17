@@ -739,7 +739,7 @@ const handleDeleteComment = (postId, commentId) => {
                         </div>
 
                         {/* DELETE COMMENT */}
-                        {isOwnComment(comment) && (
+                        {(isOwnComment(comment) || isOwnPost(post)) && (
                           <button
                             type="button"
                             className={
