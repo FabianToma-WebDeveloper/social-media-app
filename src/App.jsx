@@ -11,7 +11,7 @@ import NotFound from "./pages/NotFound";
 import ProfilePage from "./pages/profile/ProfilePage";
 import FriendsPage from "./pages/friends/FriendsPage";
 import SettingsPage from "./pages/settings/SettingsPage";
-import MessagesPage from "./components/messages/MessagesPage";
+import MessagesPage from "./components/MessagesPage";
 
 function App() {
   return (
