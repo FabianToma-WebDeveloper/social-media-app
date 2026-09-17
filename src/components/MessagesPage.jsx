@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+
 import styles from "./MessagesPage.module.scss";
 import profile from "../assets/profile.webp";
 import { selectUser } from "../redux/selectors";
@@ -23,26 +24,15 @@ const MessagesPage = () => {
     loggedUser?.email?.split("@")[0] ||
     "Nexora User";
 
-  const [selectedFriend, setSelectedFriend] = useState({
-    id: 1,
-    name: "Alex",
-  });
+  /*
+   * Fiecare utilizator logat are propriul lui
+   * storage pentru mesaje.
+   */
+  const messagesStorageKey = loggedUser?.id
+    ? `nexoraMessages_${loggedUser.id}`
+    : `nexoraMessages_${loggedUser?.email || "guest"}`;
 
-  const [messageText, setMessageText] = useState("");
-
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      sender: "Alex",
-      text: "Salut! 👋",
-    },
-    {
-      id: 2,
-      sender: currentUserName,
-      text: "Salut! Ce faci? 😄",
-    },
-  ]);
-
+  // PRIETENI DEMO
   const friends = [
     {
       id: 1,
@@ -58,6 +48,75 @@ const MessagesPage = () => {
     },
   ];
 
+  const [selectedFriend, setSelectedFriend] = useState(
+    friends[0]
+  );
+
+  const [messageText, setMessageText] = useState("");
+
+  /*
+   * Incarcam mesajele salvate.
+   * Daca nu exista, pornim cu mesajele demo.
+   */
+  const [messages, setMessages] = useState(() => {
+    try {
+      const savedMessages = localStorage.getItem(
+        messagesStorageKey
+      );
+
+      if (savedMessages) {
+        return JSON.parse(savedMessages);
+      }
+    } catch (error) {
+      console.log(
+        "Could not load messages:",
+        error
+      );
+    }
+
+    return [
+      {
+        id: 1,
+        friendId: 1,
+        sender: "Alex",
+        text: "Salut! 👋",
+        createdAt: "10:30",
+      },
+      {
+        id: 2,
+        friendId: 1,
+        sender: currentUserName,
+        text: "Salut! Ce faci? 😄",
+        createdAt: "10:31",
+      },
+    ];
+  });
+
+  /*
+   * De fiecare data cand se modifica messages,
+   * salvam conversatiile in localStorage.
+   */
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        messagesStorageKey,
+        JSON.stringify(messages)
+      );
+    } catch (error) {
+      console.log(
+        "Could not save messages:",
+        error
+      );
+    }
+  }, [messages, messagesStorageKey]);
+
+  // MESAJELE CONVERSATIEI SELECTATE
+  const conversationMessages = messages.filter(
+    (message) =>
+      message.friendId === selectedFriend.id
+  );
+
+  // TRIMITE MESAJ
   const handleSendMessage = () => {
     if (!messageText.trim()) {
       return;
@@ -65,8 +124,18 @@ const MessagesPage = () => {
 
     const newMessage = {
       id: Date.now(),
+      friendId: selectedFriend.id,
+
       sender: currentUserName,
+      senderId: loggedUser?.id,
+      senderEmail: loggedUser?.email,
+
       text: messageText.trim(),
+
+      createdAt: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     };
 
     setMessages((currentMessages) => [
@@ -77,6 +146,7 @@ const MessagesPage = () => {
     setMessageText("");
   };
 
+  // ENTER = SEND
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       handleSendMessage();
@@ -86,10 +156,12 @@ const MessagesPage = () => {
   return (
     <div className={styles.messagesPage}>
       <div className={styles.messagesContainer}>
-        {/* FRIENDS */}
+        {/* LEFT SIDE - FRIENDS */}
         <aside className={styles.friendsPanel}>
           <div className={styles.panelHeader}>
-            <h2>Messages</h2>
+            <h2>💬 Messages</h2>
+
+            <span>{currentUserName}</span>
           </div>
 
           <div className={styles.friendsList}>
@@ -102,24 +174,30 @@ const MessagesPage = () => {
                     ? styles.activeFriend
                     : ""
                 }`}
-                onClick={() => setSelectedFriend(friend)}
+                onClick={() =>
+                  setSelectedFriend(friend)
+                }
               >
                 <img
                   src={profile}
                   alt={friend.name}
                 />
 
-                <div>
+                <div className={styles.friendInfo}>
                   <strong>{friend.name}</strong>
-                  <span>Click to open chat</span>
+
+                  <span>
+                    Open conversation
+                  </span>
                 </div>
               </button>
             ))}
           </div>
         </aside>
 
-        {/* CHAT */}
+        {/* RIGHT SIDE - CHAT */}
         <section className={styles.chatPanel}>
+          {/* CHAT HEADER */}
           <div className={styles.chatHeader}>
             <img
               src={profile}
@@ -127,46 +205,93 @@ const MessagesPage = () => {
             />
 
             <div>
-              <h3>{selectedFriend.name}</h3>
-              <span>Online</span>
+              <h3>
+                {selectedFriend.name}
+              </h3>
+
+              <span>● Online</span>
             </div>
           </div>
 
+          {/* MESSAGES */}
           <div className={styles.messagesList}>
-            {messages.map((message) => {
-              const isMine =
-                message.sender === currentUserName;
+            {conversationMessages.length === 0 ? (
+              <div className={styles.emptyChat}>
+                <span>💬</span>
 
-              return (
-                <div
-                  key={message.id}
-                  className={`${styles.messageRow} ${
-                    isMine
-                      ? styles.myMessageRow
-                      : styles.friendMessageRow
-                  }`}
-                >
-                  <div
-                    className={`${styles.messageBubble} ${
-                      isMine
-                        ? styles.myMessage
-                        : styles.friendMessage
-                    }`}
-                  >
-                    <p>{message.text}</p>
-                  </div>
-                </div>
-              );
-            })}
+                <h3>
+                  Start a conversation with{" "}
+                  {selectedFriend.name}
+                </h3>
+
+                <p>
+                  Send your first message below.
+                </p>
+              </div>
+            ) : (
+              conversationMessages.map(
+                (message) => {
+                  const isMine =
+                    message.sender ===
+                    currentUserName;
+
+                  return (
+                    <div
+                      key={message.id}
+                      className={`${
+                        styles.messageRow
+                      } ${
+                        isMine
+                          ? styles.myMessageRow
+                          : styles.friendMessageRow
+                      }`}
+                    >
+                      {!isMine && (
+                        <img
+                          src={profile}
+                          alt={message.sender}
+                          className={
+                            styles.messageAvatar
+                          }
+                        />
+                      )}
+
+                      <div
+                        className={`${
+                          styles.messageBubble
+                        } ${
+                          isMine
+                            ? styles.myMessage
+                            : styles.friendMessage
+                        }`}
+                      >
+                        <p>
+                          {message.text}
+                        </p>
+
+                        <span>
+                          {
+                            message.createdAt
+                          }
+                        </span>
+                      </div>
+                    </div>
+                  );
+                }
+              )
+            )}
           </div>
 
+          {/* MESSAGE INPUT */}
           <div className={styles.messageInput}>
             <input
               type="text"
               placeholder={`Message ${selectedFriend.name}...`}
               value={messageText}
               onChange={(event) =>
-                setMessageText(event.target.value)
+                setMessageText(
+                  event.target.value
+                )
               }
               onKeyDown={handleKeyDown}
             />
