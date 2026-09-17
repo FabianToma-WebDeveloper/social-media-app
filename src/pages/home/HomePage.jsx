@@ -391,43 +391,50 @@ const HomePage = () => {
     return false;
   };
 
-  // DELETE COMMENT
-  const handleDeleteComment = (postId, commentId) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this comment?"
-    );
+ // DELETE COMMENT
+const handleDeleteComment = (postId, commentId) => {
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this comment?"
+  );
 
-    if (!confirmDelete) {
-      return;
-    }
+  if (!confirmDelete) {
+    return;
+  }
 
-    setDemoPosts((currentPosts) =>
-      currentPosts.map((post) => {
-        if (post.id !== postId) {
-          return post;
-        }
+  setDemoPosts((currentPosts) =>
+    currentPosts.map((post) => {
+      if (post.id !== postId) {
+        return post;
+      }
 
-        const commentToDelete = post.comments.find(
-          (comment) => comment.id === commentId
-        );
+      const commentToDelete = post.comments.find(
+        (comment) => comment.id === commentId
+      );
 
-        // Protectie: poti sterge doar comentariul tau
-        if (
-          !commentToDelete ||
-          !isOwnComment(commentToDelete)
-        ) {
-          return post;
-        }
+      if (!commentToDelete) {
+        return post;
+      }
 
-        return {
-          ...post,
-          comments: post.comments.filter(
-            (comment) => comment.id !== commentId
-          ),
-        };
-      })
-    );
-  };
+      // Poti sterge comentariul daca:
+      // 1. comentariul este al tau
+      // SAU
+      // 2. postarea este a ta
+      const canDelete =
+        isOwnComment(commentToDelete) || isOwnPost(post);
+
+      if (!canDelete) {
+        return post;
+      }
+
+      return {
+        ...post,
+        comments: post.comments.filter(
+          (comment) => comment.id !== commentId
+        ),
+      };
+    })
+  );
+};
 
   // ENTER = CREATE POST
   const handleKeyDown = (event) => {
