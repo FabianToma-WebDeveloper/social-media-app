@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "./MessagesPage.module.scss";
-import profile from "../../assets/profile.webp";
-import { selectUser } from "../../redux/selectors";
+import profile from "../assets/profile.webp";
+import { selectUser } from "../redux/selectors";
 
 const MessagesPage = () => {
   const auth = useSelector(selectUser);
