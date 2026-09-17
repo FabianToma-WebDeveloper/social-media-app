@@ -222,6 +222,7 @@ const HomePage = () => {
       currentPosts.filter((post) => post.id !== id)
     );
   };
+
   // VERIFICA DACA POSTAREA APARTINE USERULUI LOGAT
   const isOwnPost = (post) => {
     if (
@@ -271,6 +272,8 @@ const HomePage = () => {
   };
 
   // SHARE
+  // Momentan doar creste numarul.
+  // Il facem functional la pasul urmator.
   const handleShare = (id) => {
     setDemoPosts((currentPosts) =>
       currentPosts.map((post) => {
@@ -308,9 +311,9 @@ const HomePage = () => {
       currentPosts.map((post) =>
         post.id === id
           ? {
-            ...post,
-            showComments: !post.showComments,
-          }
+              ...post,
+              showComments: !post.showComments,
+            }
           : post
       )
     );
@@ -322,9 +325,9 @@ const HomePage = () => {
       currentPosts.map((post) =>
         post.id === id
           ? {
-            ...post,
-            commentText: value,
-          }
+              ...post,
+              commentText: value,
+            }
           : post
       )
     );
@@ -354,6 +357,73 @@ const HomePage = () => {
           ...post,
           comments: [...post.comments, newComment],
           commentText: "",
+        };
+      })
+    );
+  };
+
+  // VERIFICA DACA UN COMENTARIU APARTINE USERULUI LOGAT
+  const isOwnComment = (comment) => {
+    if (
+      loggedUser?.id &&
+      comment.userId &&
+      String(comment.userId) === String(loggedUser.id)
+    ) {
+      return true;
+    }
+
+    if (
+      loggedUser?.email &&
+      comment.email &&
+      comment.email === loggedUser.email
+    ) {
+      return true;
+    }
+
+    // Fallback pentru comentariile vechi
+    if (
+      currentUserName &&
+      comment.author === currentUserName
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  // DELETE COMMENT
+  const handleDeleteComment = (postId, commentId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this comment?"
+    );
+
+    if (!confirmDelete) {
+      return;
+    }
+
+    setDemoPosts((currentPosts) =>
+      currentPosts.map((post) => {
+        if (post.id !== postId) {
+          return post;
+        }
+
+        const commentToDelete = post.comments.find(
+          (comment) => comment.id === commentId
+        );
+
+        // Protectie: poti sterge doar comentariul tau
+        if (
+          !commentToDelete ||
+          !isOwnComment(commentToDelete)
+        ) {
+          return post;
+        }
+
+        return {
+          ...post,
+          comments: post.comments.filter(
+            (comment) => comment.id !== commentId
+          ),
         };
       })
     );
@@ -530,7 +600,9 @@ const HomePage = () => {
                 <button
                   type="button"
                   className={styles.deletePostButton}
-                  onClick={() => handleDeletePost(post.id)}
+                  onClick={() =>
+                    handleDeletePost(post.id)
+                  }
                   title="Delete post"
                 >
                   🗑️ Delete
@@ -658,6 +730,25 @@ const HomePage = () => {
 
                           <p>{comment.text}</p>
                         </div>
+
+                        {/* DELETE COMMENT */}
+                        {isOwnComment(comment) && (
+                          <button
+                            type="button"
+                            className={
+                              styles.deleteCommentButton
+                            }
+                            onClick={() =>
+                              handleDeleteComment(
+                                post.id,
+                                comment.id
+                              )
+                            }
+                            title="Delete comment"
+                          >
+                            🗑️
+                          </button>
+                        )}
                       </div>
                     ))}
                   </div>
