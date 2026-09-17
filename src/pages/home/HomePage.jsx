@@ -271,23 +271,43 @@ const HomePage = () => {
     );
   };
 
-  // SHARE
-  // Momentan doar creste numarul.
-  // Il facem functional la pasul urmator.
-  const handleShare = (id) => {
-    setDemoPosts((currentPosts) =>
-      currentPosts.map((post) => {
-        if (post.id === id) {
-          return {
-            ...post,
-            shares: post.shares + 1,
-          };
-        }
-
-        return post;
-      })
-    );
+ // SHARE FUNCTIONAL
+const handleShare = async (post) => {
+  const shareData = {
+    title: `${post.author} on Nexora`,
+    text: post.text || "Check out this post on Nexora!",
+    url: window.location.href,
   };
+
+  try {
+    // Pe telefon / browsere care suporta Web Share API
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else {
+      // Fallback pentru desktop
+      await navigator.clipboard.writeText(window.location.href);
+
+      window.alert("Nexora link copied to clipboard!");
+    }
+
+    // Creste numarul doar daca share-ul a reusit
+    setDemoPosts((currentPosts) =>
+      currentPosts.map((currentPost) =>
+        currentPost.id === post.id
+          ? {
+              ...currentPost,
+              shares: currentPost.shares + 1,
+            }
+          : currentPost
+      )
+    );
+  } catch (error) {
+    // Daca userul inchide meniul Share, nu facem nimic
+    if (error.name !== "AbortError") {
+      console.log("Could not share post:", error);
+    }
+  }
+};
 
   // ADD / REMOVE FRIEND
   const handleAddFriend = (id) => {
@@ -674,10 +694,10 @@ const handleDeleteComment = (postId, commentId) => {
 
               <button
                 type="button"
-                onClick={() =>
-                  handleShare(post.id)
-                }
-              >
+               onClick={() =>
+                handleShare(post)
+              }
+                            >
                 ↗ Share
               </button>
             </div>
